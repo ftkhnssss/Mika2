@@ -32,6 +32,14 @@ def start_chat():
     )
     return model.start_chat(history=[])
 
+# Fungsi untuk menampilkan pesan dari pengguna
+def show_user_message(message):
+    st.write(f":speech_balloon: **Anda**: {message}")
+
+# Fungsi untuk menampilkan pesan dari asisten
+def show_assistant_message(message):
+    st.write(f":robot: **Mika**: {message}")
+
 # Main program
 def main():
     st.title("Mika Asisten Kesehatan Virtual")
@@ -46,13 +54,14 @@ def main():
     user_input = st.text_input("Anda:", "")
 
     if st.button("Kirim"):
+        # Menampilkan pesan pengguna
+        show_user_message(user_input)
+        
         # Mengirim pesan pengguna ke model
         response = chat_session.send_message(user_input)
+        
         # Menampilkan respons model
-        st.text_area("Mika:", value=response.text, height=200, max_chars=None, key=None)
-        # Menampilkan riwayat obrolan
-        st.write("Riwayat Obrolan:")
-        st.json(chat_session.history)
+        show_assistant_message(response.text)
 
 if __name__ == "__main__":
     main()
