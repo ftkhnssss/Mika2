@@ -6,7 +6,7 @@ from streamlit_webrtc import VideoTransformerBase, webrtc_streamer
 # Konfigurasi API Key
 genai.configure(api_key=GEMINI_API_KEY)
 
-# Fungsi untuk memulai sesi obrolan
+# Fungsi untuk memulai sesi obrolan baru
 @st.cache(allow_output_mutation=True)
 def start_chat():
     # Konfigurasi generasi teks dan pengaturan keamanan
@@ -44,13 +44,18 @@ def show_assistant_message(message):
 def main():
     st.title("Mika Chat Assistant")
 
-    # Input Nama, Jenis Kelamin, dan Usia Pengguna
-    user_name = st.text_input("Masukkan Nama Anda:")
-    user_gender = st.selectbox("Jenis Kelamin:", ["Pilih", "Laki-laki", "Perempuan"])
-    user_age = st.number_input("Usia Anda:", min_value=0, max_value=150, step=1)
+    # Sidebar interaktif
+    st.sidebar.title("Chat History")
+    history = st.sidebar.empty()
 
-    # Memulai sesi obrolan
-    chat_session = start_chat()
+    # Pilihan sidebar
+    if st.sidebar.button("New Chat"):
+        # Bersihkan chat history
+        history.empty()
+        chat_session = start_chat()
+    else:
+        # Jika ada sesi chat yang sudah dimulai sebelumnya, gunakan sesi tersebut
+        chat_session = start_chat()
 
     # Input dari pengguna
     user_input = st.text_input("You:", "")
@@ -64,6 +69,10 @@ def main():
         
         # Menampilkan respons model
         show_assistant_message(response.text)
+
+        # Memperbarui chat history
+        history.write(f"You: {user_input}")
+        history.write(f"Mika: {response.text}")
 
     # Tambahkan elemen Webrtc
     webrtc_streamer(key="example", video_transformer_factory=None)
