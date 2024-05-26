@@ -46,8 +46,8 @@ def main():
     # Start chat session
     chat_session = start_chat()
 
-    # Display assistant's messages
-    if chat_session.messages:
+    # Display assistant's messages if available
+    if chat_session is not None and chat_session.messages:
         for message in chat_session.messages:
             show_assistant_message(message)
 
