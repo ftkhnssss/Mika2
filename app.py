@@ -46,6 +46,11 @@ def main():
     # Start chat session
     chat_session = start_chat()
 
+    # Display assistant's messages
+    if chat_session.messages:
+        for message in chat_session.messages:
+            show_assistant_message(message)
+
     # User input
     user_input = st.text_input("You:", "")
 
