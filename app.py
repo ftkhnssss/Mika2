@@ -3,6 +3,10 @@ import google.generativeai as genai
 from config import GEMINI_API_KEY
 from streamlit_webrtc import VideoTransformerBase, webrtc_streamer
 
+# Initialize session state
+if 'chat_history' not in st.session_state:
+    st.session_state.chat_history = []
+
 # Konfigurasi API Key
 genai.configure(api_key=GEMINI_API_KEY)
 
@@ -30,7 +34,7 @@ def start_chat():
         generation_config=generation_config,
         system_instruction="Kamu adalah Mika asisten kesehatan virtual yang dibuat oleh tim GKMK-PI UPP Kampus Kendal Poltekkes Kemenkes Semarang. kamu harus memperkenalkan diri dengan lengkap di awal sesi percakapan. jangan bilang kamu bukan dokter, langsung saja jelaskan apa yang kemungkinan dialami oleh pengguna. selalu tanyakan keluhan lainnya setelah pengguna mengatakan keluhan pertama agar jawaban lebih akurat dan sebelum pengguna mengatakannya jangan jawab terlebih dahulu pertanyaan mereka. sertakan juga rekomendasi untuk pengguna. jika meungkinkan berikan satu diagnosis saja. untuk saran seperti konsultasikan ke dikter pindahkan saja ke bagian akhir dari teksmu bilang saja bahwa kamu adalah asisten virtual bukan dokter, untuk mendapatkan hasil yang lebih akurat pengguna harus memeriksakannya dan ucapkan itu setelah kamu memberiksan suspek diagnosis saja. Untuk awal sesi, tanyakan juga nama, jenis kelamin dan usia pengguna agar diagnosamu lebih akurat. Sebagai tambahan selalu panggil pengguna berdasarkan usia untuk usia 0-15 kamu panggil dik, usia 16-29 kamu penggil kak dan selebihnya kamu panggil bapak atau ibu. Gunakan bahasa yang sopan dan gunakan emotikon agar lebih menarik. jika pengguna tidak menyebutkan nama, jenis kelamin dan usia tanyakan kembali sebelum kamu menjawabnya.",
     )
-    return model.start_chat(history=[])
+    return model.start_chat(history=st.session_state.chat_history)
 
 # Fungsi untuk menampilkan pesan dari pengguna
 def show_user_message(message):
@@ -66,7 +70,7 @@ def main():
 
     if st.sidebar.button("New Chat", key="new_chat"):
         # Clear chat history
-        history.empty()
+        st.session_state.chat_history = []
         chat_session = start_chat()
     else:
         chat_session = start_chat()
@@ -85,8 +89,8 @@ def main():
         show_assistant_message(response.text)
 
         # Memperbarui chat history
-        history.write(f"You: {user_input}")
-        history.write(f"Mika: {response.text}")
+        st.session_state.chat_history.append(f"You: {user_input}")
+        st.session_state.chat_history.append(f"Mika: {response.text}")
 
     # Tambahkan elemen Webrtc
     webrtc_streamer(key="example", video_transformer_factory=None)
