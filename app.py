@@ -4,7 +4,7 @@ import google.generativeai as genai
 from config import GEMINI_API_KEY
 
 # Konfigurasi API Key
-genai.configure(api_key=os.environ["AIzaSyD3WWYRk8OIOxEwnd4H0V2mYYP6WopbW5U"])
+genai.configure(api_key=GEMINI_API_KEY)
 
 # Fungsi untuk memulai sesi obrolan
 @st.cache(allow_output_mutation=True)
