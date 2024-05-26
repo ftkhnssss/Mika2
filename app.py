@@ -1,4 +1,3 @@
-import os
 import streamlit as st
 import google.generativeai as genai
 from config import GEMINI_API_KEY
@@ -34,26 +33,23 @@ def start_chat():
 
 # Fungsi untuk menampilkan pesan dari pengguna
 def show_user_message(message):
-    st.write(f":speech_balloon: **Anda**: {message}")
+    st.write(f"You: {message}")
 
 # Fungsi untuk menampilkan pesan dari asisten
 def show_assistant_message(message):
-    st.write(f":robot: **Mika**: {message}")
+    st.write(f"Mika: {message}")
 
 # Main program
 def main():
-    st.title("Mika Asisten Kesehatan Virtual")
-    st.markdown(
-        "Selamat datang! Saya Mika, asisten kesehatan virtual. Silakan ajukan keluhan atau pertanyaan kesehatan Anda di bawah ini."
-    )
+    st.title("Mika Chat Assistant")
 
     # Memulai sesi obrolan
     chat_session = start_chat()
 
     # Input dari pengguna
-    user_input = st.text_input("Anda:", "")
+    user_input = st.text_input("You:", "")
 
-    if st.button("Kirim"):
+    if st.button("Send"):
         # Menampilkan pesan pengguna
         show_user_message(user_input)
         
