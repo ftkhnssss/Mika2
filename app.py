@@ -1,15 +1,14 @@
 import streamlit as st
 import google.generativeai as genai
 from config import GEMINI_API_KEY
-from streamlit_webrtc import VideoTransformerBase, webrtc_streamer
 
-# Konfigurasi API Key
+# Configuration of API Key
 genai.configure(api_key=GEMINI_API_KEY)
 
-# Fungsi untuk memulai sesi obrolan
+# Function to start the chat session
 @st.cache(allow_output_mutation=True)
 def start_chat():
-    # Konfigurasi generasi teks dan pengaturan keamanan
+    # Configuration for text generation and security settings
     generation_config = {
         "temperature": 1,
         "top_p": 0.95,
@@ -23,7 +22,7 @@ def start_chat():
         {"category": "HARM_CATEGORY_SEXUALLY_EXPLICIT", "threshold": "BLOCK_MEDIUM_AND_ABOVE"},
         {"category": "HARM_CATEGORY_DANGEROUS_CONTENT", "threshold": "BLOCK_MEDIUM_AND_ABOVE"},
     ]
-    # Inisialisasi model
+    # Model initialization
     model = genai.GenerativeModel(
         model_name="gemini-1.5-flash",
         safety_settings=safety_settings,
@@ -32,11 +31,11 @@ def start_chat():
     )
     return model.start_chat(history=[])
 
-# Fungsi untuk menampilkan pesan dari pengguna
+# Function to display user's message
 def show_user_message(message):
     st.write(f"You: {message}")
 
-# Fungsi untuk menampilkan pesan dari asisten
+# Function to display assistant's message
 def show_assistant_message(message):
     st.write(f"Mika: {message}")
 
@@ -44,24 +43,21 @@ def show_assistant_message(message):
 def main():
     st.title("Mika Chat Assistant")
 
-    # Memulai sesi obrolan
+    # Start chat session
     chat_session = start_chat()
 
-    # Input dari pengguna
+    # User input
     user_input = st.text_input("You:", "")
 
     if st.button("Send"):
-        # Menampilkan pesan pengguna
+        # Display user's message
         show_user_message(user_input)
         
-        # Mengirim pesan pengguna ke model
+        # Send user's message to the model
         response = chat_session.send_message(user_input)
         
-        # Menampilkan respons model
+        # Display model's response
         show_assistant_message(response.text)
-
-    # Tambahkan elemen Webrtc
-    webrtc_streamer(key="example", video_transformer_factory=None)
 
 if __name__ == "__main__":
     main()
