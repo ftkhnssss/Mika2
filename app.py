@@ -2,10 +2,33 @@ import streamlit as st
 import google.generativeai as genai
 from config import GEMINI_API_KEY
 from streamlit_webrtc import VideoTransformerBase, webrtc_streamer
+import json
+
+# Path untuk menyimpan chat history
+CHAT_HISTORY_FILE = "chat_history.json"
+
+# Initialize chat history
+def initialize_chat_history():
+    with open(CHAT_HISTORY_FILE, "w") as file:
+        json.dump([], file)
+
+# Load chat history from file
+def load_chat_history():
+    try:
+        with open(CHAT_HISTORY_FILE, "r") as file:
+            return json.load(file)
+    except FileNotFoundError:
+        initialize_chat_history()
+        return []
+
+# Save chat history to file
+def save_chat_history(chat_history):
+    with open(CHAT_HISTORY_FILE, "w") as file:
+        json.dump(chat_history, file)
 
 # Initialize session state
 if 'chat_history' not in st.session_state:
-    st.session_state.chat_history = []
+    st.session_state.chat_history = load_chat_history()
 
 # Konfigurasi API Key
 genai.configure(api_key=GEMINI_API_KEY)
@@ -48,27 +71,11 @@ def show_assistant_message(message):
 def main():
     st.title("Mika Chat Assistant")
 
-    # Menampilkan sidebar kustom
-    st.markdown("""
-    <style>
-    .sidebar-content {
-        background-color: #f0f2f6;
-        padding: 20px;
-        border-radius: 10px;
-        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-    }
-    .sidebar-header {
-        font-weight: bold;
-        font-size: 20px;
-        margin-bottom: 10px;
-    }
-    </style>
-    """, unsafe_allow_html=True)
-
-    st.sidebar.markdown('<div class="sidebar-content"><div class="sidebar-header">Chat History</div></div>', unsafe_allow_html=True)
+    # Konfigurasi sidebar
+    st.sidebar.title("Chat History")
     history = st.sidebar.empty()
 
-    if st.sidebar.button("New Chat", key="new_chat"):
+    if st.sidebar.button("New Chat"):
         # Clear chat history
         st.session_state.chat_history = []
         chat_session = start_chat()
@@ -89,8 +96,8 @@ def main():
         show_assistant_message(response.text)
 
         # Memperbarui chat history
-        st.session_state.chat_history.append(f"You: {user_input}")
-        st.session_state.chat_history.append(f"Mika: {response.text}")
+        st.session_state.chat_history.append({"user": user_input, "assistant": response.text})
+        save_chat_history(st.session_state.chat_history)
 
     # Tambahkan elemen Webrtc
     webrtc_streamer(key="example", video_transformer_factory=None)
