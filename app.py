@@ -44,6 +44,11 @@ def show_assistant_message(message):
 def main():
     st.title("Mika Chat Assistant")
 
+    # Input Nama, Jenis Kelamin, dan Usia Pengguna
+    user_name = st.text_input("Masukkan Nama Anda:")
+    user_gender = st.selectbox("Jenis Kelamin:", ["Pilih", "Laki-laki", "Perempuan"])
+    user_age = st.number_input("Usia Anda:", min_value=0, max_value=150, step=1)
+
     # Memulai sesi obrolan
     chat_session = start_chat()
 
