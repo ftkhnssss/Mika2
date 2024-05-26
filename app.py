@@ -3,7 +3,7 @@ import streamlit as st
 import google.generativeai as genai
 
 # Konfigurasi API Key
-genai.configure(api_key=os.environ["GEMINI_API_KEY"])
+genai.configure(api_key=os.environ["AIzaSyD3WWYRk8OIOxEwnd4H0V2mYYP6WopbW5U"])
 
 # Fungsi untuk memulai sesi obrolan
 @st.cache(allow_output_mutation=True)
