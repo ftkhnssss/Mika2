@@ -46,13 +46,6 @@ def main():
     # Memulai sesi obrolan
     chat_session = start_chat()
 
-    # Tampilkan riwayat obrolan
-    for message in chat_session.history:
-        if message.sender == "user":
-            show_user_message(message.text)
-        else:
-            show_assistant_message(message.text)
-
     # Input dari pengguna
     user_input = st.text_input("You:", "")
 
