@@ -44,17 +44,31 @@ def show_assistant_message(message):
 def main():
     st.title("Mika Chat Assistant")
 
-    # Sidebar interaktif
-    st.sidebar.title("Chat History")
+    # Menampilkan sidebar kustom
+    st.markdown("""
+    <style>
+    .sidebar-content {
+        background-color: #f0f2f6;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    }
+    .sidebar-header {
+        font-weight: bold;
+        font-size: 20px;
+        margin-bottom: 10px;
+    }
+    </style>
+    """, unsafe_allow_html=True)
+
+    st.sidebar.markdown('<div class="sidebar-content"><div class="sidebar-header">Chat History</div></div>', unsafe_allow_html=True)
     history = st.sidebar.empty()
 
-    # Pilihan sidebar
-    if st.sidebar.button("New Chat"):
-        # Bersihkan chat history
+    if st.sidebar.button("New Chat", key="new_chat"):
+        # Clear chat history
         history.empty()
         chat_session = start_chat()
     else:
-        # Jika ada sesi chat yang sudah dimulai sebelumnya, gunakan sesi tersebut
         chat_session = start_chat()
 
     # Input dari pengguna
