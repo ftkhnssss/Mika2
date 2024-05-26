@@ -1,6 +1,7 @@
 import streamlit as st
 import google.generativeai as genai
 from config import GEMINI_API_KEY
+from streamlit_webrtc import VideoTransformerBase, webrtc_streamer
 
 # Konfigurasi API Key
 genai.configure(api_key=GEMINI_API_KEY)
@@ -58,6 +59,9 @@ def main():
         
         # Menampilkan respons model
         show_assistant_message(response.text)
+
+    # Tambahkan elemen Webrtc
+    webrtc_streamer(key="example", video_transformer_factory=None)
 
 if __name__ == "__main__":
     main()
