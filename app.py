@@ -6,7 +6,7 @@ from config import GEMINI_API_KEY
 genai.configure(api_key=GEMINI_API_KEY)
 
 # Function to start the chat session
-@st.cache(allow_output_mutation=True)
+@st.cache_resource
 def start_chat():
     # Configuration for text generation and security settings
     generation_config = {
@@ -55,15 +55,19 @@ def main():
     user_input = st.text_input("You:", "")
 
     if st.button("Send"):
-        # Display user's message
-        show_user_message(user_input)
+        if user_input.strip():
+            # Display user's message
+            show_user_message(user_input)
+            
+            # Send user's message to the model
+            response = st.session_state.chat_session.send_message(user_input)
+            
+            # Add user and assistant messages to the chat history
+            st.session_state.chat_history.append(("You", user_input))
+            st.session_state.chat_history.append(("Mika", response.text))
         
-        # Send user's message to the model
-        response = st.session_state.chat_session.send_message(user_input)
-        
-        # Add user and assistant messages to the chat history
-        st.session_state.chat_history.append(("You", user_input))
-        st.session_state.chat_history.append(("Mika", response.text))
+        # Clear the input field
+        st.experimental_rerun()
 
     # Display chat history
     for sender, message in st.session_state.chat_history:
@@ -75,6 +79,7 @@ def main():
     # Button to clear chat history
     if st.button("Clear Chat History"):
         st.session_state.chat_history = []
+        st.session_state.chat_session = start_chat()  # Restart the chat session
         st.experimental_rerun()
 
 if __name__ == "__main__":
