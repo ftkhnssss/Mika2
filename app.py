@@ -88,10 +88,39 @@ def add_custom_css():
         unsafe_allow_html=True,
     )
 
+# Function to save the current chat session
+def save_chat_history():
+    if 'saved_chats' not in st.session_state:
+        st.session_state.saved_chats = []
+    st.session_state.saved_chats.append(st.session_state.chat_history)
+
 # Main program
 def main():
     st.title("Mika Chat Assistant")
     add_custom_css()
+
+    # Sidebar options
+    with st.sidebar:
+        st.header("Options")
+        if st.button("Start New Session"):
+            save_chat_history()
+            st.session_state.chat_history = []
+            st.session_state.chat_session = start_chat()
+            st.experimental_rerun()
+
+        if st.button("Save Current Session"):
+            save_chat_history()
+
+        if st.button("Clear All Sessions"):
+            st.session_state.saved_chats = []
+            st.experimental_rerun()
+
+        if 'saved_chats' in st.session_state:
+            st.write("Saved Sessions:")
+            for i, chat in enumerate(st.session_state.saved_chats):
+                st.write(f"Session {i+1}:")
+                for sender, message in chat:
+                    st.write(f"{sender}: {message}")
 
     # Start chat session
     if 'chat_session' not in st.session_state:
