@@ -144,19 +144,19 @@ def main():
         send_button = st.button("Send")
         st.markdown('</div>', unsafe_allow_html=True)
 
-        if send_button and user_input.strip():
+                if send_button and user_input.strip():
             # Display user's message
             show_user_message(user_input)
             
             # Send user's message to the model
             response = st.session_state.chat_session.send_message(user_input)
             
-                       # Add user and assistant messages to the chat history
+            # Add user and assistant messages to the chat history
             st.session_state.chat_history.append(("You", user_input))
             st.session_state.chat_history.append(("Mika", response.text))
             
             # Clear the input field
-            st.session_state.input_text = ""  # Menggunakan input_text untuk membersihkan input
+            st.session_state.user_input = ""  # Menggunakan user_input untuk membersihkan input
             st.experimental_rerun()
 
     # Button to clear chat history
