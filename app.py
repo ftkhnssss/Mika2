@@ -147,4 +147,28 @@ def main():
 
     # Input container
     with st.container():
-        st.markdown('<div class="input-container">', unsafe_allow_html=True
+        st.markdown('<div class="input-container">', unsafe_allow_html=True)
+
+    if send_button and user_input.strip():
+        # Display user's message
+        show_user_message(user_input)
+        
+        # Send user's message to the model
+        response = st.session_state.chat_session.send_message(user_input)
+        
+        # Add user and assistant messages to the chat history
+        st.session_state.chat_history.append(("You", user_input))
+        st.session_state.chat_history.append(("Mika", response.text))
+        
+        # Clear the input field
+        st.session_state.user_input = ""  # Menggunakan user_input untuk membersihkan input
+        st.experimental_rerun()
+        
+    # Button to clear chat history
+    if st.button("Clear Chat History"):
+        st.session_state.chat_history = []
+        st.session_state.chat_session = start_chat()  # Restart the chat session
+        st.experimental_rerun()
+
+if __name__ == "__main__":
+    main()
