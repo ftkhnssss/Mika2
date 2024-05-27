@@ -144,7 +144,7 @@ def main():
         send_button = st.button("Send")
         st.markdown('</div>', unsafe_allow_html=True)
 
-        if send_button and user_input.strip():
+       if send_button and user_input.strip():
     # Display user's message
     show_user_message(user_input)
     
@@ -156,8 +156,8 @@ def main():
     st.session_state.chat_history.append(("Mika", response.text))
     
     # Clear the input field
-    user_input = ""  # Menggunakan variabel yang benar
-    st.experimental_rerun()  # Menggunakan rerun experimental
+    user_input = ""
+    st.experimental_rerun()
 
     # Button to clear chat history
     if st.button("Clear Chat History"):
