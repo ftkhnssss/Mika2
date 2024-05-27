@@ -149,7 +149,7 @@ def main():
     with st.container():
         st.markdown('<div class="input-container">', unsafe_allow_html=True)
 
-    if send_button and user_input.strip():
+    if 'send_button' in st.session_state and send_button and user_input.strip():
         # Display user's message
         show_user_message(user_input)
         
