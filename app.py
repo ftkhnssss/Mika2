@@ -33,15 +33,54 @@ def start_chat():
 
 # Function to display user's message
 def show_user_message(message):
-    st.write(f"You: {message}")
+    st.markdown(f'<div class="user-message">You: {message}</div>', unsafe_allow_html=True)
 
 # Function to display assistant's message
 def show_assistant_message(message):
-    st.write(f"Mika: {message}")
+    st.markdown(f'<div class="assistant-message">Mika: {message}</div>', unsafe_allow_html=True)
+
+# Add custom CSS for better UI
+def add_custom_css():
+    st.markdown(
+        """
+        <style>
+        .user-message {
+            background-color: #DCF8C6;
+            border-radius: 10px;
+            padding: 10px;
+            margin: 10px 0;
+            max-width: 60%;
+            float: right;
+            clear: both;
+        }
+        .assistant-message {
+            background-color: #F1F0F0;
+            border-radius: 10px;
+            padding: 10px;
+            margin: 10px 0;
+            max-width: 60%;
+            float: left;
+            clear: both;
+        }
+        .message-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+        .message-container {
+            display: flex;
+            align-items: center;
+        }
+        </style>
+        """,
+        unsafe_allow_html=True,
+    )
 
 # Main program
 def main():
     st.title("Mika Chat Assistant")
+    add_custom_css()
 
     # Start chat session
     if 'chat_session' not in st.session_state:
