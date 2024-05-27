@@ -72,6 +72,17 @@ def add_custom_css():
             display: flex;
             align-items: center;
         }
+        .input-container {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            background: white;
+            padding: 10px;
+            box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
+        }
+        .stTextInput {
+            width: calc(100% - 85px); /* Adjusted for the Send button */
+        }
         </style>
         """,
         unsafe_allow_html=True,
@@ -90,11 +101,21 @@ def main():
     if 'chat_history' not in st.session_state:
         st.session_state.chat_history = []
 
-    # User input
-    user_input = st.text_input("You:", "")
+    # Display chat history
+    for sender, message in st.session_state.chat_history:
+        if sender == "You":
+            show_user_message(message)
+        else:
+            show_assistant_message(message)
 
-    if st.button("Send"):
-        if user_input.strip():
+    # Input container
+    with st.container():
+        st.markdown('<div class="input-container">', unsafe_allow_html=True)
+        user_input = st.text_input("You:", key="input_text")
+        send_button = st.button("Send")
+        st.markdown('</div>', unsafe_allow_html=True)
+
+        if send_button and user_input.strip():
             # Display user's message
             show_user_message(user_input)
             
@@ -104,16 +125,10 @@ def main():
             # Add user and assistant messages to the chat history
             st.session_state.chat_history.append(("You", user_input))
             st.session_state.chat_history.append(("Mika", response.text))
-        
-        # Clear the input field
-        st.experimental_rerun()
-
-    # Display chat history
-    for sender, message in st.session_state.chat_history:
-        if sender == "You":
-            show_user_message(message)
-        else:
-            show_assistant_message(message)
+            
+            # Clear the input field
+            st.session_state.input_text = ""
+            st.experimental_rerun()
 
     # Button to clear chat history
     if st.button("Clear Chat History"):
