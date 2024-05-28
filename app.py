@@ -33,110 +33,41 @@ def start_chat():
 
 # Function to display user's message
 def show_user_message(message):
-    st.markdown(f'<div class="user-message">You: {message}</div>', unsafe_allow_html=True)
+    st.write(f"You: {message}")
 
 # Function to display assistant's message
 def show_assistant_message(message):
-    st.markdown(f'<div class="assistant-message">Mika: {message}</div>', unsafe_allow_html=True)
-
-# Add custom CSS for better UI
-def add_custom_css():
-    st.markdown(
-        """
-        <style>
-        .user-message {
-            background-color: #DCF8C6;
-            border-radius: 10px;
-            padding: 10px;
-            margin: 10px 0;
-            max-width: 60%;
-            float: right;
-            clear: both;
-        }
-        .assistant-message {
-            background-color: #F1F0F0;
-            border-radius: 10px;
-            padding: 10px;
-            margin: 10px 0;
-            max-width: 60%;
-            float: left;
-            clear: both;
-        }
-        .message-avatar {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            margin-right: 10px;
-        }
-        .message-container {
-            display: flex;
-            align-items: center;
-        }
-        .input-container {
-            position: fixed;
-            bottom: 0;
-            width: 100%;
-            background: white;
-            padding: 10px;
-            box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
-        }
-        .stTextInput {
-            width: calc(100% - 85px); /* Adjusted for the Send button */
-        }
-        </style>
-        """,
-        unsafe_allow_html=True,
-    )
-
-# Function to save the current chat session
-def save_chat_history():
-    if 'saved_chats' not in st.session_state:
-        st.session_state.saved_chats = []
-    st.session_state.saved_chats.append(st.session_state.chat_history)
+    st.write(f"Mika: {message}")
 
 # Main program
 def main():
     st.title("Mika Chat Assistant")
-    add_custom_css()
+
+    # Start chat session
+    if 'chat_session' not in st.session_state:
+        st.session_state.chat_session = start_chat()
 
     # Initialize chat history if not already
     if 'chat_history' not in st.session_state:
         st.session_state.chat_history = []
 
-    # Sidebar options
-    with st.sidebar:
-        st.header("Options")
-        st.write("Current Session:")
-        current_session_id = hash(tuple(st.session_state.chat_history))  # Generate unique ID for current session
-        st.write(f"Session ID: {current_session_id}")
+    # User input
+    user_input = st.text_input("You:", "")
+
+    if st.button("Send"):
+        if user_input.strip():
+            # Display user's message
+            show_user_message(user_input)
+            
+            # Send user's message to the model
+            response = st.session_state.chat_session.send_message(user_input)
+            
+            # Add user and assistant messages to the chat history
+            st.session_state.chat_history.append(("You", user_input))
+            st.session_state.chat_history.append(("Mika", response.text))
         
-        # Add button to start new session
-        if st.button("Start New Session"):
-            save_chat_history()  # Save current session
-            st.session_state.chat_history = []  # Reset chat history for new session
-            st.session_state.chat_session = start_chat()  # Start new chat session
-            st.experimental_rerun()
-
-        # Add button to clear all sessions
-        if st.button("Clear All Sessions"):
-            st.session_state.saved_chats = []  # Clear all saved sessions
-            st.experimental_rerun()
-
-        # Add saved sessions
-        if 'saved_chats' in st.session_state:
-            st.write("Saved Sessions:")
-            for i, chat in enumerate(st.session_state.saved_chats):
-                session_id = hash(tuple(chat))  # Generate unique ID for saved session
-                st.write(f"Session {i+1}:")
-                st.write(f"Session ID: {session_id}")
-                if st.button(f"Load Session {i+1}"):
-                    st.session_state.chat_history = chat  # Load selected session
-                    st.session_state.chat_session = start_chat()  # Start chat session for selected session
-                    st.experimental_rerun()
-
-    # Start chat session
-    if 'chat_session' not in st.session_state:
-        st.session_state.chat_session = start_chat()
+        # Clear the input field
+        st.experimental_rerun()
 
     # Display chat history
     for sender, message in st.session_state.chat_history:
@@ -145,28 +76,11 @@ def main():
         else:
             show_assistant_message(message)
 
-   # Input container
-with st.container():
-    st.markdown('<div class="input-container">', unsafe_allow_html=True)
-    
-    # Input field for user message
-    user_input = st.text_input("Type your message here:")
-    
-    # Button to send message
-    send_button = st.button("Send")
+    # Button to clear chat history
+    if st.button("Clear Chat History"):
+        st.session_state.chat_history = []
+        st.session_state.chat_session = start_chat()  # Restart the chat session
+        st.experimental_rerun()
 
-if 'send_button' in st.session_state and send_button and user_input.strip():
-    # Display user's message
-    show_user_message(user_input)
-    
-    # Send user's message to the model
-    response = st.session_state.chat_session.send_message(user_input)
-    
-    # Add user and assistant messages to the chat history
-    st.session_state.chat_history.append(("You", user_input))
-    st.session_state.chat_history.append(("Mika", response.text))
-    
-    # Clear the input field
-    st.session_state.user_input = ""
-    st.experimental_rerun()
-
+if __name__ == "__main__":
+    main()
