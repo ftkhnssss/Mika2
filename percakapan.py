@@ -89,6 +89,37 @@ def main():
     # Inisialisasi riwayat obrolan jika belum ada
     if 'chat_history' not in st.session_state:
         st.session_state.chat_history = load_chat_history_from_firebase(session_id)
+# Fungsi untuk memulai sesi obrolan dengan ID Sesi yang berbeda
+@st.cache(allow_output_mutation=True)
+def start_chat(session_id):
+    # Implementasi Anda untuk memulai sesi obrolan
+    pass
+
+# Fungsi untuk menyimpan percakapan ke dalam Firebase dengan nama sesuai ID Sesi
+def save_chat_history_to_firebase(chat_history, session_id):
+    ref = db.reference(f'chat_history/{session_id}')
+    ref.set(chat_history)
+
+# Fungsi untuk memuat percakapan dari Firebase dengan nama sesuai ID Sesi
+def load_chat_history_from_firebase(session_id):
+    ref = db.reference(f'chat_history/{session_id}')
+    chat_history = ref.get()
+    return chat_history if chat_history else []
+
+# Program utama
+def main():
+    st.title("Mika-Test")
+
+    # Session ID untuk setiap perangkat dan tab
+    session_id = st.session_id
+
+    # Memulai sesi obrolan dengan ID Sesi
+    if 'chat_session' not in st.session_state:
+        st.session_state.chat_session = start_chat(session_id)
+
+    # Inisialisasi riwayat obrolan jika belum ada
+    if 'chat_history' not in st.session_state:
+        st.session_state.chat_history = load_chat_history_from_firebase(session_id)
 
     # Input pengguna
     user_input = st.text_input("Ketik pesan Anda di sini:")
