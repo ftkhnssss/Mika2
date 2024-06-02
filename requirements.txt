@@ -3,4 +3,4 @@ google-generativeai
 streamlit-webrtc
 user-agents
 requests
-firebase-admin
+firebase_admin
