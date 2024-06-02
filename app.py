@@ -7,8 +7,8 @@ import time
 genai.configure(api_key=GEMINI_API_KEY)
 
 # Fungsi untuk memulai sesi obrolan
-@st.cache(allow_output_mutation=True)
-def start_chat(device_id):
+@st.cache_resource
+def start_chat():
     # Konfigurasi untuk pembangkitan teks dan pengaturan keamanan
     generation_config = {
         "temperature": 1,
@@ -28,16 +28,15 @@ def start_chat(device_id):
         model_name="gemini-1.5-flash",
         safety_settings=safety_settings,
         generation_config=generation_config,
-        system_instruction="Hi! Saya Mika, asisten kesehatan virtual Anda. Silakan perkenalkan diri Anda di awal percakapan. Saya bisa membantu Anda dengan berbagai pertanyaan kesehatan. Pastikan untuk memberikan informasi lengkap dan detail agar saya bisa memberikan saran yang akurat. 😊",
-        session_id=device_id  # Menggunakan device_id untuk membuat sesi unik perangkat
+        system_instruction="Hi! Saya Mika, asisten kesehatan virtual Anda. Silakan perkenalkan diri Anda di awal percakapan. Saya bisa membantu Anda dengan berbagai pertanyaan kesehatan. Pastikan untuk memberikan informasi lengkap dan detail agar saya bisa memberikan saran yang akurat. 😊"
     )
-    return model
+    return model.start_chat(history=[])
 
 # Fungsi untuk menampilkan pesan pengguna
 def show_user_message(message):
     st.markdown(f"""
         <div style="display: flex; justify-content: flex-end; margin-bottom: 10px;">
-            <div style="background-color: #DCF8C6; padding: 10px; border-radius: 10px; max-width: 85%;">
+            <div style="background-color: #DCF8C6; padding: 10px; border-radius: 10px; max-width: 85%; color: black;">
                 {message}
             </div>
         </div>
@@ -47,7 +46,7 @@ def show_user_message(message):
 def show_assistant_message(message, placeholder):
     placeholder.markdown(f"""
         <div style="display: flex; justify-content: flex-start; margin-bottom: 10px;">
-            <div style="background-color: #FFFFFF; padding: 10px; border-radius: 10px; max-width: 85%; border: 1px solid #ccc;">
+            <div style="background-color: #FFFFFF; padding: 10px; border-radius: 10px; max-width: 85%; border: 1px solid #ccc; color: black;">
                 {message}
             </div>
         </div>
@@ -62,13 +61,11 @@ def type_message(message, placeholder):
 
 # Program utama
 def main():
-    device_id = id(st)  # Menggunakan ID perangkat untuk setiap perangkat
-
     st.title("Mika-Test")
 
     # Memulai sesi obrolan
     if 'chat_session' not in st.session_state:
-        st.session_state.chat_session = start_chat(device_id)
+        st.session_state.chat_session = start_chat()
 
     # Inisialisasi riwayat obrolan jika belum ada
     if 'chat_history' not in st.session_state:
@@ -86,7 +83,7 @@ def main():
             typing_placeholder = st.empty()
             with typing_placeholder.container():
                 st.markdown(f"""
-                    <div style="display: flex; justify-content: flex-start; margin-bottom: 10px;">
+                    <div style="display: flex; justify-content: flex-start; margin-bottom: 10px; color: black;">
                         <div style="background-color: #FFFFFF; padding: 10px; border-radius: 10px; max-width: 85%; border: 1px solid #ccc;">
                             <em>Mika is typing...</em>
                         </div>
@@ -97,7 +94,7 @@ def main():
             time.sleep(2)
             
             # Mengirim pesan pengguna ke model
-            response = st.session_state.chat_session.start_chat(history=[])
+            response = st.session_state.chat_session.send_message(user_input)
             
             # Menambahkan pesan pengguna dan asisten ke riwayat obrolan
             st.session_state.chat_history.append(("Anda", user_input))
@@ -122,7 +119,7 @@ def main():
     # Tombol untuk menghapus riwayat obrolan
     if st.button("Hapus Riwayat Obrolan"):
         st.session_state.chat_history = []
-        st.session_state.chat_session = start_chat(device_id)  # Memulai kembali sesi obrolan
+        st.session_state.chat_session = start_chat()  # Memulai kembali sesi obrolan
         st.experimental_rerun()
 
 if __name__ == "__main__":
