@@ -1,6 +1,7 @@
 import streamlit as st
 import google.generativeai as genai
 from config import GEMINI_API_KEY
+from PIL import Image
 
 # Configuration of API Key
 genai.configure(api_key=GEMINI_API_KEY)
@@ -52,9 +53,10 @@ def main():
         st.session_state.chat_history = []
 
     # User input
-    user_input = st.text_input("You:", "")
+    user_input_col, send_col, clear_col = st.columns([4, 1, 1])  # Adjust the column ratios as needed
+    user_input = user_input_col.text_input("You:", "")
 
-    if st.button("Send"):
+    if send_col.button("", icon="➡️"):
         if user_input.strip():
             # Display user's message
             show_user_message(user_input)
@@ -77,7 +79,7 @@ def main():
             show_assistant_message(message)
 
     # Button to clear chat history
-    if st.button("Clear Chat History"):
+    if clear_col.button("", icon="🗑️"):
         st.session_state.chat_history = []
         st.session_state.chat_session = start_chat()  # Restart the chat session
         st.experimental_rerun()
