@@ -53,7 +53,7 @@ def show_assistant_message(message):
 
 # Program utama
 def main():
-    st.title("Mika Chat Assistant")
+    st.title("Mika-Test")
 
     # Memulai sesi obrolan
     if 'chat_session' not in st.session_state:
