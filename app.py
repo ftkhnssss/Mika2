@@ -31,7 +31,7 @@ def start_chat(device_id):
         system_instruction="Hi! Saya Mika, asisten kesehatan virtual Anda. Silakan perkenalkan diri Anda di awal percakapan. Saya bisa membantu Anda dengan berbagai pertanyaan kesehatan. Pastikan untuk memberikan informasi lengkap dan detail agar saya bisa memberikan saran yang akurat. 😊",
         session_id=device_id  # Menggunakan device_id untuk membuat sesi unik perangkat
     )
-    return model.start_chat(history=[])
+    return model
 
 # Fungsi untuk menampilkan pesan pengguna
 def show_user_message(message):
@@ -97,7 +97,7 @@ def main():
             time.sleep(2)
             
             # Mengirim pesan pengguna ke model
-            response = st.session_state.chat_session.send_message(user_input)
+            response = st.session_state.chat_session.start_chat(history=[])
             
             # Menambahkan pesan pengguna dan asisten ke riwayat obrolan
             st.session_state.chat_history.append(("Anda", user_input))
@@ -118,6 +118,9 @@ def main():
             show_user_message(message)
         else:
             show_assistant_message(message, st.empty())
+
+    # Tombol untuk meng
+
 
     # Tombol untuk menghapus riwayat obrolan
     if st.button("Hapus Riwayat Obrolan"):
