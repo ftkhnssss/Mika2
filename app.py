@@ -33,33 +33,26 @@ def start_chat():
 
 # Fungsi untuk menampilkan pesan pengguna
 def show_user_message(message):
-    st.markdown(
-        f'<div style="padding: 10px; border-radius: 10px; background-color: #DCF8C6; float: left; clear: both;">{message}</div>',
-        unsafe_allow_html=True
-    )
+    st.markdown(f"""
+        <div style='display: flex; justify-content: flex-end;'>
+            <div style='background-color: #DCF8C6; padding: 10px; border-radius: 10px; max-width: 85%;'>
+                {message}
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
 
 # Fungsi untuk menampilkan pesan asisten
 def show_assistant_message(message):
-    st.markdown(
-        f'<div style="padding: 10px; border-radius: 10px; background-color: #E5E7E9; float: right; clear: both;">{message}</div>',
-        unsafe_allow_html=True
-    )
+    st.markdown(f"""
+        <div style='display: flex; justify-content: flex-start;'>
+            <div style='background-color: #FFFFFF; padding: 10px; border-radius: 10px; max-width: 85%; border: 1px solid #ccc;'>
+                {message}
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
 
 # Program utama
 def main():
-    # Tambahkan CSS untuk mengatur tinggi teks area
-    st.markdown(
-        """
-        <style>
-        #user-message, #assistant-message {
-            height: fit-content;
-            max-width:90%;
-        }
-        </style>
-        """,
-        unsafe_allow_html=True
-    )
-
     st.title("Mika Chat Assistant")
 
     # Memulai sesi obrolan
