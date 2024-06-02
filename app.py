@@ -3,7 +3,12 @@ import json
 import time
 import uuid
 import hashlib
-from user_agents import parse  # Install this library using: pip install pyyaml ua-parser user-agents
+from user_agents import parse
+import google.generativeai as genai
+from config import GEMINI_API_KEY
+
+# Konfigurasi Kunci API
+genai.configure(api_key=GEMINI_API_KEY)
 
 # Generate UUID based on timestamp, IP address, and user agent
 def generate_uuid():
@@ -23,7 +28,28 @@ def generate_uuid():
 # Fungsi untuk memulai sesi obrolan
 @st.cache(allow_output_mutation=True)
 def start_chat():
-    return []
+    # Konfigurasi untuk pembangkitan teks dan pengaturan keamanan
+    generation_config = {
+        "temperature": 1,
+        "top_p": 0.95,
+        "top_k": 64,
+        "max_output_tokens": 8192,
+        "response_mime_type": "text/plain",
+    }
+    safety_settings = [
+        {"category": "HARM_CATEGORY_HARASSMENT", "threshold": "BLOCK_MEDIUM_AND_ABOVE"},
+        {"category": "HARM_CATEGORY_HATE_SPEECH", "threshold": "BLOCK_MEDIUM_AND_ABOVE"},
+        {"category": "HARM_CATEGORY_SEXUALLY_EXPLICIT", "threshold": "BLOCK_MEDIUM_AND_ABOVE"},
+        {"category": "HARM_CATEGORY_DANGEROUS_CONTENT", "threshold": "BLOCK_MEDIUM_AND_ABOVE"},
+    ]
+    # Inisialisasi model
+    model = genai.GenerativeModel(
+        model_name="gemini-1.5-flash",
+        safety_settings=safety_settings,
+        generation_config=generation_config,
+        system_instruction="Hi! Saya Mika, asisten kesehatan virtual Anda. Silakan perkenalkan diri Anda di awal percakapan. Saya bisa membantu Anda dengan berbagai pertanyaan kesehatan. Pastikan untuk memberikan informasi lengkap dan detail agar saya bisa memberikan saran yang akurat. 😊"
+    )
+    return model.start_chat(history=[])
 
 # Fungsi untuk menyimpan percakapan ke dalam file JSON
 def save_chat_history(chat_history, session_id):
@@ -131,4 +157,4 @@ def main():
         st.experimental_rerun()
 
 if __name__ == "__main__":
-    main()
+    main
