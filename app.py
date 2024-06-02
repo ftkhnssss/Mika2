@@ -51,23 +51,25 @@ def main():
     if 'chat_history' not in st.session_state:
         st.session_state.chat_history = []
 
-    # User input with icon
-    user_input = st.text_input("You:", value="", help="Enter your message here... 📝", key="user_input")
+    # Form for user input
+    with st.form(key='user_input_form'):
+        user_input = st.text_input("You:", value="", help="Enter your message here... 📝")
+        submit_button = st.form_submit_button(label='Send 🚀')
 
-    if st.button("Send 🚀"):
-        if user_input.strip():
-            # Display user's message
-            show_user_message(user_input)
+        if submit_button:
+            if user_input.strip():
+                # Display user's message
+                show_user_message(user_input)
+                
+                # Send user's message to the model
+                response = st.session_state.chat_session.send_message(user_input)
+                
+                # Add user and assistant messages to the chat history
+                st.session_state.chat_history.append(("You", user_input))
+                st.session_state.chat_history.append(("Mika", response.text))
             
-            # Send user's message to the model
-            response = st.session_state.chat_session.send_message(user_input)
-            
-            # Add user and assistant messages to the chat history
-            st.session_state.chat_history.append(("You", user_input))
-            st.session_state.chat_history.append(("Mika", response.text))
-        
-        # Clear the input field
-        st.session_state.user_input = ""
+            # Clear the input field
+            st.session_state.user_input = ""
 
     # Display chat history with emoticons
     for sender, message in st.session_state.chat_history:
