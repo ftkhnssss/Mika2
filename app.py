@@ -3,7 +3,7 @@ import google.generativeai as genai
 import time
 
 # Configure the Google AI Python SDK
-genai.configure(api_key=os.environ["GEMINI_API_KEY"])
+genai.configure(api_key=os.environ["AIzaSyAXbA0yfqV0ubLNA5fdFhQ8s8huIHAzJAc"])
 
 # Create the model
 generation_config = {
