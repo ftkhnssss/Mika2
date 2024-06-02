@@ -3,6 +3,7 @@ import json
 import google.generativeai as genai
 from config import GEMINI_API_KEY
 import time
+import uuid  # Import uuid module for generating session_id
 
 # Konfigurasi Kunci API
 genai.configure(api_key=GEMINI_API_KEY)
@@ -78,6 +79,8 @@ def main():
     st.title("Mika-Test")
 
     # Session ID
+    if 'session_id' not in st.session_state:
+        st.session_state.session_id = str(uuid.uuid4())  # Inisialisasi session_id jika belum ada
     session_id = st.session_state.session_id
 
     # Memulai sesi obrolan
