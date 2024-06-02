@@ -34,14 +34,14 @@ def start_chat():
 # Fungsi untuk menampilkan pesan pengguna
 def show_user_message(message):
     st.markdown(
-        f'<div id="user-message">{message}</div>',
+        f'<div style="padding: 10px; border-radius: 10px; background-color: #DCF8C6; float: left; clear: both;">{message}</div>',
         unsafe_allow_html=True
     )
 
 # Fungsi untuk menampilkan pesan asisten
 def show_assistant_message(message):
     st.markdown(
-        f'<div id="assistant-message">{message}</div>',
+        f'<div style="padding: 10px; border-radius: 10px; background-color: #E5E7E9; float: right; clear: both;">{message}</div>',
         unsafe_allow_html=True
     )
 
