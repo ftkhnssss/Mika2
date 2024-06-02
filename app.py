@@ -1,6 +1,7 @@
 import streamlit as st
 import google.generativeai as genai
 from config import GEMINI_API_KEY
+import time
 
 # Konfigurasi Kunci API
 genai.configure(api_key=GEMINI_API_KEY)
@@ -71,12 +72,30 @@ def main():
             # Menampilkan pesan pengguna
             show_user_message(user_input)
             
+            # Placeholder untuk animasi mengetik
+            typing_placeholder = st.empty()
+            with typing_placeholder.container():
+                st.markdown(f"""
+                    <div style="display: flex; justify-content: flex-start; margin-bottom: 10px;">
+                        <div style="background-color: #FFFFFF; padding: 10px; border-radius: 10px; max-width: 85%; border: 1px solid #ccc;">
+                            <em>Mika is typing...</em>
+                        </div>
+                    </div>
+                    """, unsafe_allow_html=True)
+            
+            # Simulasi penundaan untuk animasi mengetik
+            time.sleep(2)
+            
             # Mengirim pesan pengguna ke model
             response = st.session_state.chat_session.send_message(user_input)
             
             # Menambahkan pesan pengguna dan asisten ke riwayat obrolan
             st.session_state.chat_history.append(("Anda", user_input))
             st.session_state.chat_history.append(("Mika", response.text))
+            
+            # Menghapus placeholder dan menampilkan pesan bot yang sebenarnya
+            typing_placeholder.empty()
+            show_assistant_message(response.text)
         
         # Menghapus isi bidang input
         st.experimental_rerun()
