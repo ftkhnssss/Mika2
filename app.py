@@ -78,7 +78,7 @@ def main():
     st.title("Mika-Test")
 
     # Session ID
-    session_id = st.report_thread.get_report_ctx().session_id
+    session_id = st.session_state.session_id
 
     # Memulai sesi obrolan
     if 'chat_session' not in st.session_state:
