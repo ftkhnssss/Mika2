@@ -56,7 +56,7 @@ def main():
     user_input_col, send_col, clear_col = st.columns([4, 1, 1])  # Adjust the column ratios as needed
     user_input = user_input_col.text_input("You:", "")
 
-    if send_col.button("", icon="➡️"):
+    if send_col.image("https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/apple/285/rightwards-arrow-with-hook_21aa.png"):
         if user_input.strip():
             # Display user's message
             show_user_message(user_input)
@@ -79,7 +79,7 @@ def main():
             show_assistant_message(message)
 
     # Button to clear chat history
-    if clear_col.button("", icon="🗑️"):
+    if clear_col.image("https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/apple/285/wastebasket_1f5d1-fe0f.png"):
         st.session_state.chat_history = []
         st.session_state.chat_session = start_chat()  # Restart the chat session
         st.experimental_rerun()
