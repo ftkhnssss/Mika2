@@ -63,10 +63,39 @@ def main():
     if 'chat_history' not in st.session_state:
         st.session_state.chat_history = []
 
-    # Input pengguna
-    user_input = st.text_input("Ketik pesan Anda di sini:")
+    # Bagian input pengguna dan tombol dengan posisi tetap
+    st.markdown("""
+        <style>
+            .fixed-footer {
+                position: fixed;
+                bottom: 0;
+                width: 100%;
+                background-color: white;
+                padding: 10px 0;
+                box-shadow: 0 -2px 5px rgba(0,0,0,0.1);
+            }
+            .fixed-footer div {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            }
+            .fixed-footer input {
+                flex: 1;
+                margin-right: 10px;
+            }
+        </style>
+        <div class="fixed-footer">
+            <div>
+                <input type="text" id="user_input" placeholder="Ketik pesan Anda di sini:">
+                <button id="send_button">Kirim</button>
+                <button id="clear_button">Hapus Riwayat Obrolan</button>
+            </div>
+        </div>
+    """, unsafe_allow_html=True)
 
-    if st.button("Kirim"):
+    user_input = st.text_input("", key="user_input_key", label_visibility="collapsed")
+
+    if st.button("Kirim", key="send_button"):
         if user_input.strip():
             # Menampilkan pesan pengguna
             show_user_message(user_input)
@@ -90,7 +119,7 @@ def main():
             show_assistant_message(message)
 
     # Tombol untuk menghapus riwayat obrolan
-    if st.button("Hapus Riwayat Obrolan"):
+    if st.button("Hapus Riwayat Obrolan", key="clear_button"):
         st.session_state.chat_history = []
         st.session_state.chat_session = start_chat()  # Memulai kembali sesi obrolan
         st.experimental_rerun()
