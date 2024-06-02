@@ -1,6 +1,8 @@
 import streamlit as st
 import google.generativeai as genai
+from datetime import datetime
 import time
+import os
 
 # Configure the Google AI Python SDK
 genai.configure(api_key="AIzaSyAXbA0yfqV0ubLNA5fdFhQ8s8huIHAzJAc")
@@ -85,7 +87,7 @@ def main():
             st.session_state.chat_history.append(("Mika", response.text))
 
             # Clear the input field
-            st.session_state.user_input = ""
+            user_input = ""
 
     # Display chat history with emoticons
     for sender, message in st.session_state.chat_history:
@@ -97,7 +99,6 @@ def main():
     # Button to clear chat history
     if st.button("Clear Chat History"):
         st.session_state.chat_history = []
-        st.experimental_rerun()
 
 if __name__ == "__main__":
     main()
