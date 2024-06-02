@@ -33,11 +33,11 @@ def start_chat():
 
 # Function to display user's message
 def show_user_message(message):
-    st.write(f"You: {message}")
+    st.write(f'<div style="text-align:left">{message}</div>', unsafe_allow_html=True)
 
 # Function to display assistant's message
 def show_assistant_message(message):
-    st.write(f"Mika: {message}")
+    st.write(f'<div style="text-align:right">{message}</div>', unsafe_allow_html=True)
 
 # Main program
 def main():
@@ -52,7 +52,7 @@ def main():
         st.session_state.chat_history = []
 
     # User input
-    user_input = st.text_input("You:", "")
+    user_input = st.text_input("You:", "", key="user_input")
 
     if st.button("Send"):
         if user_input.strip():
@@ -67,7 +67,7 @@ def main():
             st.session_state.chat_history.append(("Mika", response.text))
         
         # Clear the input field
-        st.experimental_rerun()
+        st.session_state.user_input = ""
 
     # Display chat history
     for sender, message in st.session_state.chat_history:
@@ -80,7 +80,6 @@ def main():
     if st.button("Clear Chat History"):
         st.session_state.chat_history = []
         st.session_state.chat_session = start_chat()  # Restart the chat session
-        st.experimental_rerun()
 
 if __name__ == "__main__":
     main()
