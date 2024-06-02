@@ -89,7 +89,7 @@ def main():
                 # Clear the input field
                 user_input = ""
 
-                # Now add user and assistant messages to the chat history
+                # Tambahkan pesan yang sesuai setelah membersihkan input
                 st.session_state.chat_history.append(("You", user_input))
                 st.session_state.chat_history.append(("Mika", response.text))
 
