@@ -119,9 +119,6 @@ def main():
         else:
             show_assistant_message(message, st.empty())
 
-    # Tombol untuk meng
-
-
     # Tombol untuk menghapus riwayat obrolan
     if st.button("Hapus Riwayat Obrolan"):
         st.session_state.chat_history = []
