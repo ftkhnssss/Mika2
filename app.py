@@ -89,6 +89,9 @@ def main():
                 # Clear the input field
                 user_input = ""
 
+                # Setelah pesan dikirim, kosongkan input chat
+                st.session_state.user_input = user_input
+
                 # Tambahkan pesan yang sesuai setelah membersihkan input
                 st.session_state.chat_history.append(("You", user_input))
                 st.session_state.chat_history.append(("Mika", response.text))
