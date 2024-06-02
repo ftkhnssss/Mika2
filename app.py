@@ -16,11 +16,11 @@ def main():
 
     # Memulai sesi obrolan
     if 'chat_session' not in st.session_state:
-        st.session_state.chat_session = start_chat()
+        st.session_state.chat_session = start_chat(session_id)  # Menggunakan session_id sebagai argumen untuk memulai sesi obrolan
 
     # Inisialisasi riwayat obrolan jika belum ada
     if 'chat_history' not in st.session_state:
-        st.session_state.chat_history = load_chat_history(session_id)
+        st.session_state.chat_history = load_chat_history(session_id)  # Menggunakan session_id untuk memuat histori obrolan
 
     # Input pengguna
     user_input = st.text_input("Ketik pesan Anda di sini:")
@@ -92,7 +92,7 @@ def main():
     if st.button("Hapus Riwayat Obrolan"):
         st.session_state.chat_history = []
         save_chat_history(st.session_state.chat_history, session_id)  # Simpan perubahan ke dalam file JSON
-        st.session_state.chat_session = start_chat()  # Memulai kembali sesi obrolan
+        st.session_state.chat_session = start_chat(session_id)  # Memulai kembali sesi obrolan dengan session_id yang baru
         st.experimental_rerun()
 
 if __name__ == "__main__":
