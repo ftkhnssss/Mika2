@@ -43,10 +43,19 @@ def show_assistant_message(message):
 def main():
     st.title("Mika Chat Assistant")
 
+    # Initialize chat session if not already
+    if 'chat_session' not in st.session_state:
+        st.session_state.chat_session = start_chat()
+
+    # Initialize chat history if not already
+    if 'chat_history' not in st.session_state:
+        st.session_state.chat_history = []
+
     # Display chat history
-    for sender, message in st.session_state.chat_history:
-        if sender == "Mika":
-            show_assistant_message(message)
+    if 'chat_history' in st.session_state:
+        for sender, message in st.session_state.chat_history:
+            if sender == "Mika":
+                show_assistant_message(message)
 
     # User input
     user_input = st.text_input("You:", "")
@@ -65,14 +74,6 @@ def main():
         
         # Clear the input field
         st.experimental_rerun()
-
-    # Initialize chat session if not already
-    if 'chat_session' not in st.session_state:
-        st.session_state.chat_session = start_chat()
-
-    # Initialize chat history if not already
-    if 'chat_history' not in st.session_state:
-        st.session_state.chat_history = []
 
     # Button to clear chat history
     if st.button("Clear Chat History"):
