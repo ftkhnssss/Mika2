@@ -30,12 +30,15 @@ def main():
             # Display user's message
             show_user_message(user_input)
             
-            # Simulate typing delay
-            st.markdown('<span style="color: #696969;"><em>Mika is typing...</em></span>', unsafe_allow_html=True)
-            time.sleep(2)  # Simulate typing delay
+            # Show typing indicator
+            typing_indicator = st.markdown('<span style="color: #696969;"><em>Mika is typing...</em></span>', unsafe_allow_html=True)
             
             # Simulate assistant response (replace with actual response from the assistant)
             response = "Hello! How can I assist you today?"
+            time.sleep(2)  # Simulate typing delay
+            
+            # Remove typing indicator
+            typing_indicator.empty()
             
             # Display assistant's message
             show_assistant_message(response)
