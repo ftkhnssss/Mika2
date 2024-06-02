@@ -1,16 +1,15 @@
 import streamlit as st
 import json
 import google.generativeai as genai
-import time
-import os
 from config import GEMINI_API_KEY
+import time
 
 # Konfigurasi Kunci API
 genai.configure(api_key=GEMINI_API_KEY)
 
 # Fungsi untuk memulai sesi obrolan
 @st.cache(allow_output_mutation=True)
-def start_chat(session_id):
+def start_chat():
     # Konfigurasi untuk pembangkitan teks dan pengaturan keamanan
     generation_config = {
         "temperature": 1,
@@ -34,12 +33,12 @@ def start_chat(session_id):
     )
     return model.start_chat(history=[])
 
-# Fungsi untuk menyimpan percakapan ke dalam file JSON dengan nama sesuai angka acak
+# Fungsi untuk menyimpan percakapan ke dalam file JSON
 def save_chat_history(chat_history, session_id):
     with open(f'{session_id}_chat_history.json', 'w') as file:
         json.dump(chat_history, file)
 
-# Fungsi untuk memuat percakapan dari file JSON dengan nama sesuai angka acak
+# Fungsi untuk memuat percakapan dari file JSON
 def load_chat_history(session_id):
     try:
         with open(f'{session_id}_chat_history.json', 'r') as file:
@@ -47,23 +46,43 @@ def load_chat_history(session_id):
     except FileNotFoundError:
         return []
 
+# Fungsi untuk menampilkan pesan pengguna
+def show_user_message(message):
+    st.markdown(f"""
+        <div style="display: flex; justify-content: flex-end; margin-bottom: 10px;">
+            <div style="background-color: #DCF8C6; padding: 10px; border-radius: 10px; max-width: 85%; color: black;">
+                {message}
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
+
+# Fungsi untuk menampilkan pesan asisten
+def show_assistant_message(message, placeholder):
+    placeholder.markdown(f"""
+        <div style="display: flex; justify-content: flex-start; margin-bottom: 10px;">
+            <div style="background-color: #FFFFFF; padding: 10px; border-radius: 10px; max-width: 85%; border: 1px solid #ccc; color: black;">
+                {message}
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
+
+def type_message(message, placeholder):
+    typed_text = ""
+    for char in message:
+        typed_text += char
+        show_assistant_message(typed_text, placeholder)
+        time.sleep(0.05)  # Adjust the typing speed here
+
 # Program utama
 def main():
     st.title("Mika-Test")
 
-    # Meminta pengguna untuk memasukkan angka acak saat pertama kali mengakses aplikasi
-    random_number = st.text_input("Masukkan 6 angka acak:", max_chars=6)
-
-    if len(random_number) != 6:
-        st.warning("Anda harus memasukkan 6 angka acak.")
-
-    # Inisialisasi session ID menggunakan angka acak yang dimasukkan oleh pengguna
-    session_id = st.session_state.get('session_id') or random_number
-    st.session_state.session_id = session_id
+    # Session ID
+    session_id = st.session_state.session_id
 
     # Memulai sesi obrolan
     if 'chat_session' not in st.session_state:
-        st.session_state.chat_session = start_chat(session_id)
+        st.session_state.chat_session = start_chat()
 
     # Inisialisasi riwayat obrolan jika belum ada
     if 'chat_history' not in st.session_state:
@@ -74,8 +93,55 @@ def main():
 
     if st.button("Kirim"):
         if user_input.strip():
-            # ... Sisa kode penanganan pesan pengguna dan tanggapan asisten ...
-            pass
+            # Menampilkan pesan pengguna
+            show_user_message(user_input)
+            
+            # Placeholder untuk animasi mengetik
+            typing_placeholder = st.empty()
+            with typing_placeholder.container():
+                st.markdown(f"""
+                    <div style="display: flex; justify-content: flex-start; margin-bottom: 10px; color: black;">
+                        <div style="background-color: #FFFFFF; padding: 10px; border-radius: 10px; max-width: 85%; border: 1px solid #ccc;">
+                            <em>Mika is typing...</em>
+                        </div>
+                    </div>
+                    """, unsafe_allow_html=True)
+            
+            # Simulasi penundaan untuk animasi mengetik
+            time.sleep(2)
+            
+            # Mengirim pesan pengguna ke model
+            response = st.session_state.chat_session.send_message(user_input)
+            
+            # Menambahkan pesan pengguna dan asisten ke riwayat obrolan
+            st.session_state.chat_history.append(("Anda", user_input))
+            st.session_state.chat_history.append(("Mika", response.text))
+            
+            # Simpan riwayat obrolan ke dalam file JSON
+            save_chat_history(st.session_state.chat_history, session_id)
+            
+            # Menghapus placeholder dan menampilkan pesan bot yang sebenarnya per huruf
+            typing_placeholder.empty()
+            typing_placeholder = st.empty()  # Create a new placeholder for the typing animation
+            type_message(response.text, typing_placeholder)
+        
+        # Menghapus isi bidang input
+        st.experimental_rerun()
+
+    # Menampilkan riwayat obrolan
+    chat_history_reversed = reversed(st.session_state.chat_history)
+    for sender, message in chat_history_reversed:
+        if sender == "Anda":
+            show_user_message(message)
+        else:
+            show_assistant_message(message, st.empty())
+
+    # Tombol untuk menghapus riwayat obrolan
+    if st.button("Hapus Riwayat Obrolan"):
+        st.session_state.chat_history = []
+        save_chat_history(st.session_state.chat_history, session_id)  # Simpan perubahan ke dalam file JSON
+        st.session_state.chat_session = start_chat()  # Memulai kembali sesi obrolan
+        st.experimental_rerun()
 
 if __name__ == "__main__":
     main()
