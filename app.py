@@ -51,10 +51,10 @@ def main():
     if 'chat_history' not in st.session_state:
         st.session_state.chat_history = []
 
-    # User input
-    user_input = st.text_input("You:", "")
+    # User input with icon
+    user_input = st.text_input("You:", value="", help="Enter your message here... 📝", key="user_input")
 
-    if st.button("Send"):
+    if st.button("Send 🚀"):
         if user_input.strip():
             # Display user's message
             show_user_message(user_input)
@@ -67,7 +67,7 @@ def main():
             st.session_state.chat_history.append(("Mika", response.text))
         
         # Clear the input field
-        st.experimental_rerun()
+        st.session_state.user_input = ""
 
     # Display chat history with emoticons
     for sender, message in st.session_state.chat_history:
