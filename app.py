@@ -8,7 +8,7 @@ import streamlit as st
 
 # Inisialisasi Firebase menggunakan kredensial dari serviceAccountKey.json
 cred = credentials.Certificate("mika-test-f7138-firebase-adminsdk-qnp9p-ac39df705b.json")
-firebase_admin.initialize_app(cred)
+firebase_admin.initialize_app(cred, {'databseURL' : 'https://mika-test-f7138-default-rtdb.firebaseio.com/'})
 
 from config import GEMINI_API_KEY
 
