@@ -1,16 +1,23 @@
-import firebase_admin
-from firebase_admin import credentials, db
 import time
 import uuid
 import google.generativeai as genai
 import streamlit as st
-
-
-# Inisialisasi Firebase menggunakan kredensial dari serviceAccountKey.json
-cred = credentials.Certificate("mika-test-f7138-firebase-adminsdk-qnp9p-ac39df705b.json")
-firebase_admin.initialize_app(cred, {'databaseURL' : 'https://mika-test-f7138-default-rtdb.firebaseio.com/'})
-
+import firebase_admin
+from firebase_admin import credentials, db
+from firebase_admin.exceptions import FirebaseError
 from config import GEMINI_API_KEY
+
+# Initialize Firebase only if not already initialized
+if not firebase_admin._apps:
+    try:
+        # Inisialisasi Firebase menggunakan kredensial dari serviceAccountKey.json
+        cred = credentials.Certificate("mika-test-f7138-firebase-adminsdk-qnp9p-ac39df705b.json")
+        firebase_admin.initialize_app(cred, {
+            'databaseURL': 'https://mika-test-f7138-default-rtdb.firebaseio.com/'
+        })
+    except (FileNotFoundError, FirebaseError) as e:
+        st.error(f"Failed to initialize Firebase: {e}")
+        st.stop()
 
 # Konfigurasi Kunci API
 genai.configure(api_key=GEMINI_API_KEY)
@@ -82,37 +89,6 @@ def main():
     # Inisialisasi riwayat obrolan jika belum ada
     if 'chat_history' not in st.session_state:
         st.session_state.chat_history = load_chat_history_from_firebase(session_id)
-# Fungsi untuk memulai sesi obrolan dengan ID Sesi yang berbeda
-@st.cache(allow_output_mutation=True)
-def start_chat(session_id):
-    # Implementasi Anda untuk memulai sesi obrolan
-    pass
-
-# Fungsi untuk menyimpan percakapan ke dalam Firebase dengan nama sesuai ID Sesi
-def save_chat_history_to_firebase(chat_history, session_id):
-    ref = db.reference(f'chat_history/{session_id}')
-    ref.set(chat_history)
-
-# Fungsi untuk memuat percakapan dari Firebase dengan nama sesuai ID Sesi
-def load_chat_history_from_firebase(session_id):
-    ref = db.reference(f'chat_history/{session_id}')
-    chat_history = ref.get()
-    return chat_history if chat_history else []
-
-# Program utama
-def main():
-    st.title("Mika-Test")
-
-    # Session ID untuk setiap perangkat dan tab
-    session_id = st.session_id
-
-    # Memulai sesi obrolan dengan ID Sesi
-    if 'chat_session' not in st.session_state:
-        st.session_state.chat_session = start_chat(session_id)
-
-    # Inisialisasi riwayat obrolan jika belum ada
-    if 'chat_history' not in st.session_state:
-        st.session_state.chat_history = load_chat_history_from_firebase(session_id)
 
     # Input pengguna
     user_input = st.text_input("Ketik pesan Anda di sini:")
@@ -173,20 +149,23 @@ def main():
                 """, unsafe_allow_html=True)
         else:
             st.markdown(f"""
-                <div style="display: flex; justify-content: flex-start; margin-bottom: 10px;">
+                <div style="display: flex; justify-content: flex-start; margin-bottom: 10px; color: black;">
                     <div style="background-color: #FFFFFF; padding: 10px; border-radius: 10px; max-width: 85%; border: 1px solid #ccc; color: black;">
                         {message}
                     </div>
                 </div>
                 """, unsafe_allow_html=True)
 
-# Tombol untuk menghapus riwayat obrolan
-if st.button("Hapus Riwayat Obrolan"):
-    # Hapus riwayat obrolan dari session_state
-    st.session_state.chat_history = []
-    # Simpan perubahan ke Firebase
-    save_chat_history_to_firebase(st.session_state.chat_history, session_id)
-    # Mulai kembali sesi obrolan
-    st.session_state.chat_session = start_chat()
-    # Jalankan kembali aplikasi
-    st.experimental_rerun()
+    # Tombol untuk menghapus riwayat obrolan
+    if st.button("Hapus Riwayat Obrolan"):
+        # Hapus riwayat obrolan dari session_state
+        st.session_state.chat_history = []
+        # Simpan perubahan ke Firebase
+        save_chat_history_to_firebase(st.session_state.chat_history, session_id)
+        # Mulai kembali sesi obrolan
+        st.session_state.chat_session = start_chat()
+        # Jalankan kembali aplikasi
+        st.experimental_rerun()
+
+if __name__ == "__main__":
+    main()
