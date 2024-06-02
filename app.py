@@ -5,36 +5,6 @@ import json
 
 from percakapan import start_chat, save_chat_history, load_chat_history, type_message
 
-# Fungsi untuk memulai sesi obrolan dengan session_id
-@st.cache(allow_output_mutation=True)
-def start_chat():
-    session_id = st.session_state.session_id  # Mengambil session_id dari st.session_state
-    # Konfigurasi untuk pembangkitan teks dan pengaturan keamanan
-    generation_config = {
-        "temperature": 1,
-        "top_p": 0.95,
-        "top_k": 64,
-        "max_output_tokens": 8192,
-        "response_mime_type": "text/plain",
-    }
-    safety_settings = [
-        {"category": "HARM_CATEGORY_HARASSMENT", "threshold": "BLOCK_MEDIUM_AND_ABOVE"},
-        {"category": "HARM_CATEGORY_HATE_SPEECH", "threshold": "BLOCK_MEDIUM_AND_ABOVE"},
-        {"category": "HARM_CATEGORY_SEXUALLY_EXPLICIT", "threshold": "BLOCK_MEDIUM_AND_ABOVE"},
-        {"category": "HARM_CATEGORY_DANGEROUS_CONTENT", "threshold": "BLOCK_MEDIUM_AND_ABOVE"},
-    ]
-    # Inisialisasi model
-    model = genai.GenerativeModel(
-        model_name="gemini-1.5-flash",
-        safety_settings=safety_settings,
-        generation_config=generation_config,
-        system_instruction="Hi! Saya Mika, asisten kesehatan virtual Anda. Silakan perkenalkan diri Anda di awal percakapan. Saya bisa membantu Anda dengan berbagai pertanyaan kesehatan. Pastikan untuk memberikan informasi lengkap dan detail agar saya bisa memberikan saran yang akurat. 😊",
-        context={
-            "session_id": session_id  # Menyimpan session_id di dalam context
-        }
-    )
-    return model.start_chat(history=[])
-
 # Program utama
 def main():
     st.title("Mika-Test")
@@ -46,11 +16,11 @@ def main():
 
     # Memulai sesi obrolan
     if 'chat_session' not in st.session_state:
-        st.session_state.chat_session = start_chat()  # Tidak perlu menyertakan session_id saat memanggil start_chat()
+        st.session_state.chat_session = start_chat()
 
     # Inisialisasi riwayat obrolan jika belum ada
     if 'chat_history' not in st.session_state:
-        st.session_state.chat_history = load_chat_history(session_id)  # Menggunakan session_id untuk memuat histori obrolan
+        st.session_state.chat_history = load_chat_history(session_id)
 
     # Input pengguna
     user_input = st.text_input("Ketik pesan Anda di sini:")
