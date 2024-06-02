@@ -8,7 +8,7 @@ import time
 genai.configure(api_key=GEMINI_API_KEY)
 
 # Fungsi untuk memulai sesi obrolan
-@st.cache_resource
+@st.cache(allow_output_mutation=True)
 def start_chat():
     # Konfigurasi untuk pembangkitan teks dan pengaturan keamanan
     generation_config = {
