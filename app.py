@@ -62,7 +62,7 @@ def type_message(message, placeholder):
 
 # Program utama
 def main():
-    session_id = st.session_state.session_id  # Mendapatkan session_id untuk setiap perangkat
+    session_id = st.session_id  # Menggunakan session_id untuk setiap perangkat
 
     st.title("Mika-Test")
 
