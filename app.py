@@ -1,4 +1,5 @@
 import streamlit as st
+import json
 import google.generativeai as genai
 from config import GEMINI_API_KEY
 import time
@@ -31,6 +32,19 @@ def start_chat():
         system_instruction="Hi! Saya Mika, asisten kesehatan virtual Anda. Silakan perkenalkan diri Anda di awal percakapan. Saya bisa membantu Anda dengan berbagai pertanyaan kesehatan. Pastikan untuk memberikan informasi lengkap dan detail agar saya bisa memberikan saran yang akurat. 😊"
     )
     return model.start_chat(history=[])
+
+# Fungsi untuk menyimpan percakapan ke dalam file JSON
+def save_chat_history(chat_history):
+    with open('chat_history.json', 'w') as file:
+        json.dump(chat_history, file)
+
+# Fungsi untuk memuat percakapan dari file JSON
+def load_chat_history():
+    try:
+        with open('chat_history.json', 'r') as file:
+            return json.load(file)
+    except FileNotFoundError:
+        return []
 
 # Fungsi untuk menampilkan pesan pengguna
 def show_user_message(message):
