@@ -75,4 +75,5 @@ def main():
                 # Display assistant's message
                 show_assistant_message(response.text)
 
-if __name
+if __name__ == "__main__":
+    main()
