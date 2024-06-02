@@ -3,4 +3,3 @@ google-generativeai
 streamlit-webrtc
 user-agents
 requests
-json
