@@ -33,14 +33,32 @@ def start_chat():
 
 # Fungsi untuk menampilkan pesan pengguna
 def show_user_message(message):
-    st.text_area("Anda:", message, height=None, max_chars=None, key=None, help=None)
+    st.markdown(
+        f'<div id="user-message">{message}</div>',
+        unsafe_allow_html=True
+    )
 
 # Fungsi untuk menampilkan pesan asisten
 def show_assistant_message(message):
-    st.text_area("Mika:", message, height=None, max_chars=None, key=None, help=None)
+    st.markdown(
+        f'<div id="assistant-message">{message}</div>',
+        unsafe_allow_html=True
+    )
 
 # Program utama
 def main():
+    # Tambahkan CSS untuk mengatur tinggi teks area
+    st.markdown(
+        """
+        <style>
+        #user-message, #assistant-message {
+            height: fit-content;
+        }
+        </style>
+        """,
+        unsafe_allow_html=True
+    )
+
     st.title("Mika Chat Assistant")
 
     # Memulai sesi obrolan
