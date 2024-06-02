@@ -33,11 +33,11 @@ def start_chat():
 
 # Fungsi untuk menampilkan pesan pengguna
 def show_user_message(message):
-    st.text_area("You:", message, height=100)
+    st.text_area("You:", message, height=None, max_chars=None, key=None, help=None)
 
 # Fungsi untuk menampilkan pesan asisten
 def show_assistant_message(message):
-    st.text_area("Mika:", message, height=100)
+    st.text_area("Mika:", message, height=None, max_chars=None, key=None, help=None)
 
 # Program utama
 def main():
