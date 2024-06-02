@@ -87,7 +87,7 @@ def main():
                 show_assistant_message(response.text)
                 
                 # Clear the input field
-                st.session_state.user_input = ""
+                user_input = ""
 
                 # Now add user and assistant messages to the chat history
                 st.session_state.chat_history.append(("You", user_input))
