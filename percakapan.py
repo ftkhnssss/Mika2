@@ -5,16 +5,9 @@ import uuid
 import google.generativeai as genai
 import streamlit as st
 
-import os
-
-# Mendapatkan path ke direktori saat ini (tempat file percakapan.py berada)
-current_directory = os.path.dirname(__file__)
-
-# Membangun path lengkap ke serviceAccountKey.json
-service_account_key_path = os.path.join(current_directory, "mika-test-f7138-firebase-adminsdk-qnp9p-ac39df705b.json")
 
 # Inisialisasi Firebase menggunakan kredensial dari serviceAccountKey.json
-cred = credentials.Certificate(service_account_key_path)
+cred = credentials.Certificate(mika-test-f7138-firebase-adminsdk-qnp9p-ac39df705b.json)
 firebase_admin.initialize_app(cred)
 
 from config import GEMINI_API_KEY
