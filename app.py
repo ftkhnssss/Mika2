@@ -1,78 +1,9 @@
 import streamlit as st
-import json
-import google.generativeai as genai
-from config import GEMINI_API_KEY
 import time
-import uuid  # Import uuid module for generating session_id
+import uuid
+import json
 
-# Konfigurasi Kunci API
-genai.configure(api_key=GEMINI_API_KEY)
-
-# Fungsi untuk memulai sesi obrolan
-@st.cache(allow_output_mutation=True)
-def start_chat():
-    # Konfigurasi untuk pembangkitan teks dan pengaturan keamanan
-    generation_config = {
-        "temperature": 1,
-        "top_p": 0.95,
-        "top_k": 64,
-        "max_output_tokens": 8192,
-        "response_mime_type": "text/plain",
-    }
-    safety_settings = [
-        {"category": "HARM_CATEGORY_HARASSMENT", "threshold": "BLOCK_MEDIUM_AND_ABOVE"},
-        {"category": "HARM_CATEGORY_HATE_SPEECH", "threshold": "BLOCK_MEDIUM_AND_ABOVE"},
-        {"category": "HARM_CATEGORY_SEXUALLY_EXPLICIT", "threshold": "BLOCK_MEDIUM_AND_ABOVE"},
-        {"category": "HARM_CATEGORY_DANGEROUS_CONTENT", "threshold": "BLOCK_MEDIUM_AND_ABOVE"},
-    ]
-    # Inisialisasi model
-    model = genai.GenerativeModel(
-        model_name="gemini-1.5-flash",
-        safety_settings=safety_settings,
-        generation_config=generation_config,
-        system_instruction="Hi! Saya Mika, asisten kesehatan virtual Anda. Silakan perkenalkan diri Anda di awal percakapan. Saya bisa membantu Anda dengan berbagai pertanyaan kesehatan. Pastikan untuk memberikan informasi lengkap dan detail agar saya bisa memberikan saran yang akurat. 😊"
-    )
-    return model.start_chat(history=[])
-
-# Fungsi untuk menyimpan percakapan ke dalam file JSON
-def save_chat_history(chat_history, session_id):
-    with open(f'{session_id}_chat_history.json', 'w') as file:
-        json.dump(chat_history, file)
-
-# Fungsi untuk memuat percakapan dari file JSON
-def load_chat_history(session_id):
-    try:
-        with open(f'{session_id}_chat_history.json', 'r') as file:
-            return json.load(file)
-    except FileNotFoundError:
-        return []
-
-# Fungsi untuk menampilkan pesan pengguna
-def show_user_message(message):
-    st.markdown(f"""
-        <div style="display: flex; justify-content: flex-end; margin-bottom: 10px;">
-            <div style="background-color: #DCF8C6; padding: 10px; border-radius: 10px; max-width: 85%; color: black;">
-                {message}
-            </div>
-        </div>
-        """, unsafe_allow_html=True)
-
-# Fungsi untuk menampilkan pesan asisten
-def show_assistant_message(message, placeholder):
-    placeholder.markdown(f"""
-        <div style="display: flex; justify-content: flex-start; margin-bottom: 10px;">
-            <div style="background-color: #FFFFFF; padding: 10px; border-radius: 10px; max-width: 85%; border: 1px solid #ccc; color: black;">
-                {message}
-            </div>
-        </div>
-        """, unsafe_allow_html=True)
-
-def type_message(message, placeholder):
-    typed_text = ""
-    for char in message:
-        typed_text += char
-        show_assistant_message(typed_text, placeholder)
-        time.sleep(0.05)  # Adjust the typing speed here
+from percakapan import start_chat, save_chat_history, load_chat_history, type_message
 
 # Program utama
 def main():
@@ -97,7 +28,13 @@ def main():
     if st.button("Kirim"):
         if user_input.strip():
             # Menampilkan pesan pengguna
-            show_user_message(user_input)
+            st.markdown(f"""
+                <div style="display: flex; justify-content: flex-end; margin-bottom: 10px;">
+                    <div style="background-color: #DCF8C6; padding: 10px; border-radius: 10px; max-width: 85%; color: black;">
+                        {user_input}
+                    </div>
+                </div>
+                """, unsafe_allow_html=True)
             
             # Placeholder untuk animasi mengetik
             typing_placeholder = st.empty()
@@ -135,9 +72,21 @@ def main():
     chat_history_reversed = reversed(st.session_state.chat_history)
     for sender, message in chat_history_reversed:
         if sender == "Anda":
-            show_user_message(message)
+            st.markdown(f"""
+                <div style="display: flex; justify-content: flex-end; margin-bottom: 10px;">
+                    <div style="background-color: #DCF8C6; padding: 10px; border-radius: 10px; max-width: 85%; color: black;">
+                        {message}
+                    </div>
+                </div>
+                """, unsafe_allow_html=True)
         else:
-            show_assistant_message(message, st.empty())
+            st.markdown(f"""
+                <div style="display: flex; justify-content: flex-start; margin-bottom: 10px;">
+                    <div style="background-color: #FFFFFF; padding: 10px; border-radius: 10px; max-width: 85%; border: 1px solid #ccc; color: black;">
+                        {message}
+                    </div>
+                </div>
+                """, unsafe_allow_html=True)
 
     # Tombol untuk menghapus riwayat obrolan
     if st.button("Hapus Riwayat Obrolan"):
