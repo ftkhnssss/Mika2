@@ -83,15 +83,15 @@ def main():
                 # Send user's message to the model
                 response = chat_session.send_message(user_input)
                 
-                # Display assistant's message
+                # Display assistant's message (without updating chat history yet)
                 show_assistant_message(response.text)
                 
-                # Add user and assistant messages to the chat history
-                st.session_state.chat_history.append(("You", user_input))
-                st.session_state.chat_history.append(("Mika", response.text))
-
                 # Clear the input field
                 user_input = ""
+
+                # Now add user and assistant messages to the chat history
+                st.session_state.chat_history.append(("You", user_input))
+                st.session_state.chat_history.append(("Mika", response.text))
 
     # Display chat history with emoticons
     for sender, message in reversed(st.session_state.chat_history):
