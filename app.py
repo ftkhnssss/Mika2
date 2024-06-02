@@ -8,7 +8,7 @@ genai.configure(api_key=GEMINI_API_KEY)
 
 # Fungsi untuk memulai sesi obrolan
 @st.cache(allow_output_mutation=True)
-def start_chat(device_id):
+def start_chat(session_id):
     # Konfigurasi untuk pembangkitan teks dan pengaturan keamanan
     generation_config = {
         "temperature": 1,
@@ -29,7 +29,7 @@ def start_chat(device_id):
         safety_settings=safety_settings,
         generation_config=generation_config,
         system_instruction="Hi! Saya Mika, asisten kesehatan virtual Anda. Silakan perkenalkan diri Anda di awal percakapan. Saya bisa membantu Anda dengan berbagai pertanyaan kesehatan. Pastikan untuk memberikan informasi lengkap dan detail agar saya bisa memberikan saran yang akurat. 😊",
-        session_id=device_id  # Menggunakan ID perangkat untuk membuat sesi unik perangkat
+        session_id=session_id  # Menggunakan session_id untuk membuat sesi unik perangkat
     )
     return model.start_chat(history=[])
 
@@ -62,13 +62,13 @@ def type_message(message, placeholder):
 
 # Program utama
 def main():
-    device_id = st.session_state.device_id  # Menggunakan ID perangkat untuk setiap perangkat
+    session_id = st.session_id  # Menggunakan session_id untuk setiap perangkat
 
     st.title("Mika-Test")
 
     # Memulai sesi obrolan
     if 'chat_session' not in st.session_state:
-        st.session_state.chat_session = start_chat(device_id)
+        st.session_state.chat_session = start_chat(session_id)
 
     # Inisialisasi riwayat obrolan jika belum ada
     if 'chat_history' not in st.session_state:
@@ -122,7 +122,7 @@ def main():
     # Tombol untuk menghapus riwayat obrolan
     if st.button("Hapus Riwayat Obrolan"):
         st.session_state.chat_history = []
-        st.session_state.chat_session = start_chat(device_id)  # Memulai kembali sesi obrolan
+        st.session_state.chat_session = start_chat(session_id)  # Memulai kembali sesi obrolan
         st.experimental_rerun()
 
 if __name__ == "__main__":
