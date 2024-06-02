@@ -60,8 +60,11 @@ def type_message(message):
 def main():
     st.title("Mika-Test")
 
-    # Mendapatkan ID pengguna unik (misalnya, alamat IP)
-    user_id = st.session_state.id or hash(st.session_state)
+    # Mendapatkan ID pengguna unik dari session cookie
+    user_id = st.session_state.user_id or hash(st.session_state)
+
+    # Set session cookie untuk pengguna ini
+    st.session_state.user_id = user_id
 
     # Memulai sesi obrolan untuk pengguna ini jika belum ada
     if f"chat_session_{user_id}" not in st.session_state:
