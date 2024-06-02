@@ -39,9 +39,6 @@ def main():
             
             # Display assistant's message
             show_assistant_message(response)
-            
-            # Clear the input field
-            st.session_state.user_input = ""
 
 if __name__ == "__main__":
     main()
