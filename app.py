@@ -28,7 +28,7 @@ def start_chat():
         model_name="gemini-1.5-flash",
         safety_settings=safety_settings,
         generation_config=generation_config,
-        system_instruction="Kamu adalah Mika asisten kesehatan virtual yang dibuat oleh tim GKMK-PI UPP Kampus Kendal Poltekkes Kemenkes Semarang. kamu harus memperkenalkan diri dengan lengkap di awal sesi percakapan. jangan bilang kamu bukan dokter, langsung saja jelaskan apa yang kemungkinan dialami oleh pengguna. selalu tanyakan keluhan lainnya setelah pengguna mengatakan keluhan pertama agar jawaban lebih akurat dan sebelum pengguna mengatakannya jangan jawab terlebih dahulu pertanyaan mereka. selalu sertakan juga pengobatan atau cara apa saja yang apa yang bisa dilakukan oleh pengguna. jika meungkinkan berikan satu diagnosis saja. untuk saran seperti konsultasikan ke dikter pindahkan saja ke bagian akhir dari teksmu bilang saja bahwa kamu adalah asisten virtual bukan dokter, untuk mendapatkan hasil yang lebih akurat pengguna harus memeriksakannya dan ucapkan itu setelah kamu memberiksan suspek diagnosis saja. Untuk awal sesi, selalu tanyakan juga nama, jenis kelamin dan usia pengguna agar diagnosamu lebih akurat. Sebagai tambahan selalu panggil pengguna berdasarkan usia untuk usia 0-15 kamu panggil dik, usia 16-29 kamu penggil kak dan selebihnya kamu panggil bapak atau ibu. Gunakan bahasa yang sopan dan gunakan emotikon agar lebih menarik. jika pengguna tidak menyebutkan nama, jenis kelamin dan usia tanyakan kembali sebelum kamu menjawabnya."
+        system_instruction="Hi! Saya Mika, asisten kesehatan virtual Anda. Silakan perkenalkan diri Anda di awal percakapan. Saya bisa membantu Anda dengan berbagai pertanyaan kesehatan. Pastikan untuk memberikan informasi lengkap dan detail agar saya bisa memberikan saran yang akurat. 😊"
     )
     return model.start_chat(history=[])
 
@@ -36,7 +36,7 @@ def start_chat():
 def show_user_message(message):
     st.markdown(f"""
         <div style="display: flex; justify-content: flex-end; margin-bottom: 10px;">
-            <div style="background-color: #DCF8C6; padding: 10px; border-radius: 10px; max-width: 85%;">
+            <div style="background-color: #DCF8C6; padding: 10px; border-radius: 10px; max-width: 85%; color: black;">
                 {message}
             </div>
         </div>
@@ -46,7 +46,7 @@ def show_user_message(message):
 def show_assistant_message(message, placeholder):
     placeholder.markdown(f"""
         <div style="display: flex; justify-content: flex-start; margin-bottom: 10px;">
-            <div style="background-color: #FFFFFF; padding: 10px; border-radius: 10px; max-width: 85%; border: 1px solid #ccc;">
+            <div style="background-color: #FFFFFF; padding: 10px; border-radius: 10px; max-width: 85%; border: 1px solid #ccc; color: black;">
                 {message}
             </div>
         </div>
@@ -83,7 +83,7 @@ def main():
             typing_placeholder = st.empty()
             with typing_placeholder.container():
                 st.markdown(f"""
-                    <div style="display: flex; justify-content: flex-start; margin-bottom: 10px;">
+                    <div style="display: flex; justify-content: flex-start; margin-bottom: 10px; color: black;">
                         <div style="background-color: #FFFFFF; padding: 10px; border-radius: 10px; max-width: 85%; border: 1px solid #ccc;">
                             <em>Mika is typing...</em>
                         </div>
