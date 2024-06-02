@@ -3,6 +3,7 @@ import json
 import google.generativeai as genai
 import time
 import os
+from config import GEMINI_API_KEY
 
 # Konfigurasi Kunci API
 genai.configure(api_key=GEMINI_API_KEY)
