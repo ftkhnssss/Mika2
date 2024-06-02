@@ -69,7 +69,7 @@ def main():
         # Clear the input field
         st.experimental_rerun()
 
-    # Display chat history
+    # Display chat history with emoticons
     for sender, message in st.session_state.chat_history:
         if sender == "You":
             show_user_message(message)
