@@ -43,14 +43,21 @@ def show_user_message(message):
         """, unsafe_allow_html=True)
 
 # Fungsi untuk menampilkan pesan asisten
-def show_assistant_message(message):
-    st.markdown(f"""
+def show_assistant_message(message, placeholder):
+    placeholder.markdown(f"""
         <div style="display: flex; justify-content: flex-start; margin-bottom: 10px;">
             <div style="background-color: #FFFFFF; padding: 10px; border-radius: 10px; max-width: 85%; border: 1px solid #ccc;">
                 {message}
             </div>
         </div>
         """, unsafe_allow_html=True)
+
+def type_message(message, placeholder):
+    typed_text = ""
+    for char in message:
+        typed_text += char
+        show_assistant_message(typed_text, placeholder)
+        time.sleep(0.05)  # Adjust the typing speed here
 
 # Program utama
 def main():
@@ -93,9 +100,10 @@ def main():
             st.session_state.chat_history.append(("Anda", user_input))
             st.session_state.chat_history.append(("Mika", response.text))
             
-            # Menghapus placeholder dan menampilkan pesan bot yang sebenarnya
+            # Menghapus placeholder dan menampilkan pesan bot yang sebenarnya per huruf
             typing_placeholder.empty()
-            show_assistant_message(response.text)
+            typing_placeholder = st.empty()  # Create a new placeholder for the typing animation
+            type_message(response.text, typing_placeholder)
         
         # Menghapus isi bidang input
         st.experimental_rerun()
@@ -106,7 +114,7 @@ def main():
         if sender == "Anda":
             show_user_message(message)
         else:
-            show_assistant_message(message)
+            show_assistant_message(message, st.empty())
 
     # Tombol untuk menghapus riwayat obrolan
     if st.button("Hapus Riwayat Obrolan"):
