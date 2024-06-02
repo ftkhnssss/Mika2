@@ -94,7 +94,7 @@ def main():
                 user_input = ""
 
     # Display chat history with emoticons
-    for sender, message in st.session_state.chat_history:
+    for sender, message in reversed(st.session_state.chat_history):
         if sender == "You":
             show_user_message(message)
         else:
