@@ -11,7 +11,7 @@ import os
 current_directory = os.path.dirname(__file__)
 
 # Membangun path lengkap ke serviceAccountKey.json
-service_account_key_path = os.path.join(current_directory, "serviceAccountKey.json")
+service_account_key_path = os.path.join(current_directory, "mika-test-f7138-firebase-adminsdk-qnp9p-ac39df705b.json")
 
 # Inisialisasi Firebase menggunakan kredensial dari serviceAccountKey.json
 cred = credentials.Certificate(service_account_key_path)
