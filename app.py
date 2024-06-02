@@ -34,7 +34,7 @@ def start_chat():
 # Fungsi untuk menampilkan pesan pengguna
 def show_user_message(message):
     st.markdown(f"""
-        <div style='display: flex; justify-content: flex-end;'>
+        <div style='display: flex; justify-content: flex-end; margin-bottom: 10px;'>
             <div style='background-color: #DCF8C6; padding: 10px; border-radius: 10px; max-width: 85%;'>
                 {message}
             </div>
@@ -44,7 +44,7 @@ def show_user_message(message):
 # Fungsi untuk menampilkan pesan asisten
 def show_assistant_message(message):
     st.markdown(f"""
-        <div style='display: flex; justify-content: flex-start;'>
+        <div style='display: flex; justify-content: flex-start; margin-bottom: 10px;'>
             <div style='background-color: #FFFFFF; padding: 10px; border-radius: 10px; max-width: 85%; border: 1px solid #ccc;'>
                 {message}
             </div>
