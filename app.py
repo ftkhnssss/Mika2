@@ -33,11 +33,11 @@ def start_chat():
 
 # Fungsi untuk menampilkan pesan pengguna
 def show_user_message(message):
-    st.write(f"You: {message}")
+    st.text_area("You:", message, height=100)
 
 # Fungsi untuk menampilkan pesan asisten
 def show_assistant_message(message):
-    st.write(f"Mika: {message}")
+    st.text_area("Mika:", message, height=100)
 
 # Program utama
 def main():
@@ -52,7 +52,7 @@ def main():
         st.session_state.chat_history = []
 
     # Input pengguna
-    user_input = st.text_input("You:", "")
+    user_input = st.text_input("Type your message here:")
 
     if st.button("Send"):
         if user_input.strip():
