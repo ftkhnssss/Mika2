@@ -34,14 +34,14 @@ def start_chat():
     return model.start_chat(history=[])
 
 # Fungsi untuk menyimpan percakapan ke dalam file JSON
-def save_chat_history(chat_history):
-    with open('chat_history.json', 'w') as file:
+def save_chat_history(chat_history, session_id):
+    with open(f'{session_id}_chat_history.json', 'w') as file:
         json.dump(chat_history, file)
 
 # Fungsi untuk memuat percakapan dari file JSON
-def load_chat_history():
+def load_chat_history(session_id):
     try:
-        with open('chat_history.json', 'r') as file:
+        with open(f'{session_id}_chat_history.json', 'r') as file:
             return json.load(file)
     except FileNotFoundError:
         return []
@@ -77,13 +77,16 @@ def type_message(message, placeholder):
 def main():
     st.title("Mika-Test")
 
+    # Session ID
+    session_id = st.report_thread.get_report_ctx().session_id
+
     # Memulai sesi obrolan
     if 'chat_session' not in st.session_state:
         st.session_state.chat_session = start_chat()
 
     # Inisialisasi riwayat obrolan jika belum ada
     if 'chat_history' not in st.session_state:
-        st.session_state.chat_history = []
+        st.session_state.chat_history = load_chat_history(session_id)
 
     # Input pengguna
     user_input = st.text_input("Ketik pesan Anda di sini:")
@@ -114,6 +117,9 @@ def main():
             st.session_state.chat_history.append(("Anda", user_input))
             st.session_state.chat_history.append(("Mika", response.text))
             
+            # Simpan riwayat obrolan ke dalam file JSON
+            save_chat_history(st.session_state.chat_history, session_id)
+            
             # Menghapus placeholder dan menampilkan pesan bot yang sebenarnya per huruf
             typing_placeholder.empty()
             typing_placeholder = st.empty()  # Create a new placeholder for the typing animation
@@ -133,6 +139,7 @@ def main():
     # Tombol untuk menghapus riwayat obrolan
     if st.button("Hapus Riwayat Obrolan"):
         st.session_state.chat_history = []
+        save_chat_history(st.session_state.chat_history, session_id)  # Simpan perubahan ke dalam file JSON
         st.session_state.chat_session = start_chat()  # Memulai kembali sesi obrolan
         st.experimental_rerun()
 
