@@ -1,11 +1,10 @@
 import streamlit as st
 import google.generativeai as genai
-from datetime import datetime
 import time
 import os
 
 # Configure the Google AI Python SDK
-genai.configure(api_key="AIzaSyAXbA0yfqV0ubLNA5fdFhQ8s8huIHAzJAc")
+genai.configure(api_key=os.environ["GEMINI_API_KEY"])
 
 # Create the model
 generation_config = {
@@ -60,45 +59,20 @@ def show_assistant_message(message):
 # Main program
 def main():
     st.title("Mika Chat Assistant")
+    
+    # Display input text in sidebar
+    with st.sidebar:
+        user_input = st.text_area("You:", value="", height=100, help="Enter your message here... 📝", key="user_input")
 
-    # Start chat session
-    chat_session = model.start_chat(history=[])
+        if st.button("Send 🚀"):
+            if user_input.strip():
+                # Display user's message
+                show_user_message(user_input)
 
-    # Initialize chat history if not already
-    if 'chat_history' not in st.session_state:
-        st.session_state.chat_history = []
+                # Send user's message to the model
+                response = model.send_message(user_input)
 
-    # User input with icon
-    user_input = st.text_input("You:", value="", help="Enter your message here... 📝", key="user_input")
+                # Display assistant's message
+                show_assistant_message(response.text)
 
-    if st.button("Send 🚀"):
-        if user_input.strip():
-            # Display user's message
-            show_user_message(user_input)
-            
-            # Send user's message to the model
-            response = chat_session.send_message(user_input)
-            
-            # Display assistant's message
-            show_assistant_message(response.text)
-            
-            # Add user and assistant messages to the chat history
-            st.session_state.chat_history.append(("You", user_input))
-            st.session_state.chat_history.append(("Mika", response.text))
-
-            # Clear the input field
-            user_input = ""
-
-    # Display chat history with emoticons
-    for sender, message in st.session_state.chat_history:
-        if sender == "You":
-            show_user_message(message)
-        else:
-            show_assistant_message(message)
-
-    # Button to clear chat history
-    if st.button("Clear Chat History"):
-        st.session_state.chat_history = []
-
-if __name__ == "__main__":
-    main()
+if __name
