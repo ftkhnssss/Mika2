@@ -53,6 +53,7 @@ def main():
         <style>
         #user-message, #assistant-message {
             height: fit-content;
+            max-width:90%;
         }
         </style>
         """,
