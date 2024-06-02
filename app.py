@@ -34,8 +34,8 @@ def start_chat():
 # Fungsi untuk menampilkan pesan pengguna
 def show_user_message(message):
     st.markdown(f"""
-        <div style='display: flex; justify-content: flex-end; margin-bottom: 10px;'>
-            <div style='background-color: #DCF8C6; padding: 10px; border-radius: 10px; max-width: 85%; word-wrap: break-word;'>
+        <div style="display: flex; justify-content: flex-end; margin-bottom: 10px;">
+            <div style="background-color: #DCF8C6; padding: 10px; border-radius: 10px; max-width: 85%;">
                 {message}
             </div>
         </div>
@@ -44,8 +44,8 @@ def show_user_message(message):
 # Fungsi untuk menampilkan pesan asisten
 def show_assistant_message(message):
     st.markdown(f"""
-        <div style='display: flex; justify-content: flex-start; margin-bottom: 10px;'>
-            <div style='background-color: #FFFFFF; padding: 10px; border-radius: 10px; max-width: 85%; border: 1px solid #ccc; word-wrap: break-word;'>
+        <div style="display: flex; justify-content: flex-start; margin-bottom: 10px;">
+            <div style="background-color: #FFFFFF; padding: 10px; border-radius: 10px; max-width: 85%; border: 1px solid #ccc;">
                 {message}
             </div>
         </div>
@@ -74,9 +74,6 @@ def main():
             # Mengirim pesan pengguna ke model
             response = st.session_state.chat_session.send_message(user_input)
             
-            # Debugging output
-            st.text(f"Response text: {response.text}")
-
             # Menambahkan pesan pengguna dan asisten ke riwayat obrolan
             st.session_state.chat_history.append(("Anda", user_input))
             st.session_state.chat_history.append(("Mika", response.text))
